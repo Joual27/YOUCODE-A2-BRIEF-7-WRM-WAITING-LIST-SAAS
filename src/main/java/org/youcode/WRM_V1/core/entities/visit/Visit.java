@@ -36,7 +36,7 @@ public class Visit {
     private String status;
 
     @Column(name = "PRIORITY")
-    private int priority;
+    private Integer priority;
 
     @Column(name = "ESTIMATED_VISIT_TIME")
     private Duration estimatedVisitTime;

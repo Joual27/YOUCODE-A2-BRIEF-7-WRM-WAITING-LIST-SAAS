@@ -14,6 +14,5 @@ import java.util.List;
 public interface WaitingListDAO extends GenericDao<WaitingList , Long> {
     @Query("FROM Visit v WHERE v.waitingList = :waitingList")
     List<Visit> getVisitsOfWaitingList(@Param("waitingList") WaitingList waitingList);
-
     Page<WaitingList> findAll(Pageable pageable);
 }
