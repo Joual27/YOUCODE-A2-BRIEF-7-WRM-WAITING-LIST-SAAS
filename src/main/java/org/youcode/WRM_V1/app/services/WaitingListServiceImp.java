@@ -7,11 +7,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.youcode.WRM_V1.app.ports.inbound.WaitingListService;
 import org.youcode.WRM_V1.core.entities.visit.Visit;
-import org.youcode.WRM_V1.core.entities.waitingList.DTOs.CreateWaitingListDTO;
+import org.youcode.WRM_V1.core.entities.waitingList.DTOs.CreateAndUpdateWaitingListDTO;
 import org.youcode.WRM_V1.core.entities.waitingList.DTOs.WaitingListResponseDTO;
 import org.youcode.WRM_V1.core.entities.waitingList.WaitingList;
 import org.youcode.WRM_V1.core.entities.waitingList.mappers.CreateWaitingListDTOToWaitingListEntityMapper;
 import org.youcode.WRM_V1.core.entities.waitingList.mappers.WaitingListEntityToWaitingListResponseDTOMapper;
+import org.youcode.WRM_V1.core.exceptions.EntityNotFoundException;
 import org.youcode.WRM_V1.core.exceptions.NegativeCapacityException;
 import org.youcode.WRM_V1.infra.adapters.outbound.persistence.WaitingListPersistenceAdapter;
 
@@ -44,7 +45,7 @@ public class WaitingListServiceImp implements WaitingListService {
     }
 
     @Override
-    public WaitingListResponseDTO save(CreateWaitingListDTO data){
+    public WaitingListResponseDTO save(CreateAndUpdateWaitingListDTO data){
         WaitingList waitingListToCreate = createWaitingListDTOToWaitingListEntityMapper.toEntity(data);
         if (data.algorithm() == null){
             waitingListToCreate.setAlgorithm(defaultAlgorithm);
@@ -63,6 +64,35 @@ public class WaitingListServiceImp implements WaitingListService {
     public Page<WaitingListResponseDTO> getAll(Pageable pageable) {
         Page<WaitingList> waitingLists = waitingListPersistenceAdapter.findAll(pageable);
         return waitingLists.map(waitingListEntityToWaitingListResponseDTOMapper::entityToDto);
+    }
+
+
+    @Override
+    public WaitingListResponseDTO update(Long id, CreateAndUpdateWaitingListDTO data){
+        WaitingList w = waitingListPersistenceAdapter.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("No waiting list was found with given id !"));
+        if (data.capacity() <= 0){
+            throw new NegativeCapacityException("Capacity Can't be negative ! ");
+        }
+        WaitingList waitingListToUpdate = createWaitingListDTOToWaitingListEntityMapper.toEntity(data);
+        waitingListToUpdate.setId(id);
+        WaitingList updatedWaitingList = waitingListPersistenceAdapter.save(waitingListToUpdate);
+        return waitingListEntityToWaitingListResponseDTOMapper.entityToDto(updatedWaitingList);
+    }
+
+    @Override
+    public WaitingListResponseDTO getWaitingListById(Long id){
+        WaitingList w = waitingListPersistenceAdapter.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("No waiting list was found with given id !"));
+        return waitingListEntityToWaitingListResponseDTOMapper.entityToDto(w);
+    }
+
+    @Override
+    public WaitingListResponseDTO delete(Long id){
+        WaitingList w = waitingListPersistenceAdapter.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("No waiting list was found with given id !"));
+        waitingListPersistenceAdapter.deleteById(id);
+        return waitingListEntityToWaitingListResponseDTOMapper.entityToDto(w);
     }
 }
 

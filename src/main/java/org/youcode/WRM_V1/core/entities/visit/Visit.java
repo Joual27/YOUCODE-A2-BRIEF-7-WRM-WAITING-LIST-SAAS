@@ -32,7 +32,7 @@ public class Visit {
     @Column(name = "END_DATE")
     private LocalDateTime endDate;
 
-    @Column(name = "STATUS")
+    @Column(name = "STATUS" , columnDefinition = "VARCHAR(25) DEFAULT 'PENDING' ")
     private String status;
 
     @Column(name = "PRIORITY")

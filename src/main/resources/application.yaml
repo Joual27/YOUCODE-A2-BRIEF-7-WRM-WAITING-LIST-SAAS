@@ -5,6 +5,8 @@ spring:
     active: ${DEFAULT_ACTIVE_PROFILE}
   datasource:
     driver-class-name: com.ibm.db2.jcc.DB2Driver
+    username: ${DB_AUTH_USERNAME}
+    password: ${DB_AUTH_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
@@ -15,8 +17,6 @@ spring:
     activate:
       on-profile: dev,sit
   datasource:
-    username: ${DB_AUTH_USERNAME}
-    password : ${DB_AUTH_PASSWORD}
     url : ${DEV_DB_URL}
 
 
@@ -26,8 +26,6 @@ spring:
     activate:
       on-profile: uat
   datasource:
-    username: ${DB_AUTH_USERNAME}
-    password : ${DB_AUTH_PASSWORD}
     url : ${TEST_DB_URL}
 
 ---
@@ -36,7 +34,5 @@ spring:
     activate:
       on-profile: prod
   datasource:
-    username: ${DB_AUTH_USERNAME}
-    password : ${DB_AUTH_PASSWORD}
     url : ${PROD_DB_URL}
 

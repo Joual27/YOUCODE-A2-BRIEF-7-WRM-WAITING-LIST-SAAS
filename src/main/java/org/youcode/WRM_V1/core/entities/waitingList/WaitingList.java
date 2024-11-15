@@ -2,6 +2,7 @@ package org.youcode.WRM_V1.core.entities.waitingList;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,6 +30,6 @@ public class WaitingList extends BaseEntity {
     @Column(name = "CAPACITY")
     private Integer capacity;
 
-    @OneToMany(mappedBy = "waitingList")
+    @OneToMany(mappedBy = "waitingList" , fetch = FetchType.EAGER)
     private List<Visit> visits;
 }

@@ -3,6 +3,7 @@ package org.youcode.WRM_V1.core.entities.visitor;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,6 +24,6 @@ public class Visitor extends BaseEntity {
     @Column(name = "LAST_NAME")
     private String lastName;
 
-    @OneToMany(mappedBy = "visitor")
+    @OneToMany(mappedBy = "visitor" , fetch = FetchType.EAGER)
     private Set<Visit> visits;
 }
