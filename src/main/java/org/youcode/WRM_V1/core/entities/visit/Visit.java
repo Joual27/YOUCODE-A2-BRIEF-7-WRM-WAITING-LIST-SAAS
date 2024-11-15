@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Data
 public class Visit {
-
     @EmbeddedId
     private VisitKey id;
 

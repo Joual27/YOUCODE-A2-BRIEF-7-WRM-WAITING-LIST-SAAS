@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.youcode.WRM_V1.app.ports.inbound.VisitService;
 import org.youcode.WRM_V1.core.entities.visit.DTOs.CreateVisitDTO;
 import org.youcode.WRM_V1.core.entities.visit.DTOs.VisitResponseDTO;
-import org.youcode.WRM_V1.core.entities.visit.Visit;
 import org.youcode.WRM_V1.utils.DTOs.SuccessDTO;
 
 import java.util.List;

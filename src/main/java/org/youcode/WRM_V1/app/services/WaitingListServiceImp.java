@@ -18,6 +18,7 @@ import org.youcode.WRM_V1.infra.adapters.outbound.persistence.WaitingListPersist
 
 import java.util.List;
 
+
 @Service
 public class WaitingListServiceImp implements WaitingListService {
 
@@ -40,11 +41,6 @@ public class WaitingListServiceImp implements WaitingListService {
     }
 
     @Override
-    public List<Visit> getVisitsOfWaitingList(WaitingList waitingList){
-        return waitingListPersistenceAdapter.getVisitsOfWaitingList(waitingList);
-    }
-
-    @Override
     public WaitingListResponseDTO save(CreateAndUpdateWaitingListDTO data){
         WaitingList waitingListToCreate = createWaitingListDTOToWaitingListEntityMapper.toEntity(data);
         if (data.algorithm() == null){
@@ -63,7 +59,11 @@ public class WaitingListServiceImp implements WaitingListService {
     @Override
     public Page<WaitingListResponseDTO> getAll(Pageable pageable) {
         Page<WaitingList> waitingLists = waitingListPersistenceAdapter.findAll(pageable);
-        return waitingLists.map(waitingListEntityToWaitingListResponseDTOMapper::entityToDto);
+        return waitingLists.map(waitingList -> {
+            List<Visit> orderedVisits = getOrderedVisits(waitingList.getAlgorithm(), waitingList);
+            waitingList.setVisits(orderedVisits);
+            return waitingListEntityToWaitingListResponseDTOMapper.entityToDto(waitingList);
+        });
     }
 
 
@@ -84,6 +84,7 @@ public class WaitingListServiceImp implements WaitingListService {
     public WaitingListResponseDTO getWaitingListById(Long id){
         WaitingList w = waitingListPersistenceAdapter.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("No waiting list was found with given id !"));
+        w.setVisits(getOrderedVisits(w.getAlgorithm(),w));
         return waitingListEntityToWaitingListResponseDTOMapper.entityToDto(w);
     }
 
@@ -93,6 +94,19 @@ public class WaitingListServiceImp implements WaitingListService {
                 .orElseThrow(() -> new EntityNotFoundException("No waiting list was found with given id !"));
         waitingListPersistenceAdapter.deleteById(id);
         return waitingListEntityToWaitingListResponseDTOMapper.entityToDto(w);
+    }
+
+    private List<Visit> getOrderedVisits(String algorithm , WaitingList w){
+        switch (algorithm){
+            case "FIFO":
+                return waitingListPersistenceAdapter.getVisitsOfWaitingListOrderedByFifo(w);
+            case "SJF":
+                return waitingListPersistenceAdapter.getVisitsOfWaitingListOrderedBySJF(w);
+            case "PF":
+                return waitingListPersistenceAdapter.getVisitsOfWaitingListOrderedByPF(w);
+            default:
+                return List.of();
+        }
     }
 }
 

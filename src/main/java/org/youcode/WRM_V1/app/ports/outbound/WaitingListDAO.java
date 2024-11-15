@@ -12,7 +12,11 @@ import org.youcode.WRM_V1.core.entities.waitingList.WaitingList;
 import java.util.List;
 
 public interface WaitingListDAO extends GenericDao<WaitingList , Long> {
-    @Query("FROM Visit v WHERE v.waitingList = :waitingList")
-    List<Visit> getVisitsOfWaitingList(@Param("waitingList") WaitingList waitingList);
+    @Query("FROM Visit v WHERE v.waitingList = :waitingList ORDER BY v.arrivalTime ASC")
+    List<Visit> getVisitsOfWaitingListOrderedByFifo(@Param("waitingList") WaitingList waitingList);
+    @Query("FROM Visit v WHERE v.waitingList = :waitingList ORDER BY v.estimatedVisitTime ASC")
+    List<Visit> getVisitsOfWaitingListOrderedBySJF(@Param("waitingList") WaitingList waitingList);
+    @Query("FROM Visit v WHERE v.waitingList = :waitingList ORDER BY v.priority ASC")
+    List<Visit> getVisitsOfWaitingListOrderedByPF(@Param("waitingList") WaitingList waitingList);
     Page<WaitingList> findAll(Pageable pageable);
 }

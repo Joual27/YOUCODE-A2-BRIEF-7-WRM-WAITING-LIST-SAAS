@@ -10,7 +10,6 @@ import org.youcode.WRM_V1.core.entities.waitingList.WaitingList;
 import java.util.List;
 
 public interface WaitingListService {
-    List<Visit> getVisitsOfWaitingList(WaitingList waitingList);
     WaitingListResponseDTO save(CreateAndUpdateWaitingListDTO data);
     Page<WaitingListResponseDTO> getAll(Pageable pageable);
     WaitingListResponseDTO update(Long id , CreateAndUpdateWaitingListDTO data);
