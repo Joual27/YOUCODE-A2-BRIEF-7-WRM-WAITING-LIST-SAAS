@@ -15,4 +15,5 @@ public interface WaitingListService {
     Page<WaitingListResponseDTO> getAll(Pageable pageable);
     WaitingListResponseDTO update(Long id , CreateAndUpdateWaitingListDTO data);
     WaitingListResponseDTO getWaitingListById(Long id);
+    WaitingListResponseDTO delete(Long id);
 }

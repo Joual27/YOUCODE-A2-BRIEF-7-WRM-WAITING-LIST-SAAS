@@ -39,15 +39,20 @@ public class WaitingListWebAdapter {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SuccessDTO<WaitingListResponseDTO>> updateWaitingList(@PathVariable Long id , @RequestBody CreateAndUpdateWaitingListDTO req){
+    public ResponseEntity<SuccessDTO<WaitingListResponseDTO>> updateWaitingList(@PathVariable Long id , @RequestBody @Valid CreateAndUpdateWaitingListDTO req){
        WaitingListResponseDTO res = waitingListService.update(id , req);
        return new ResponseEntity<>(new SuccessDTO<>("success" , "Waiting List "+  id +" Updated Successfully !" , res) , HttpStatus.OK);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<SuccessDTO<WaitingListResponseDTO>> getWaitingListByID(@PathVariable Long id){
         WaitingListResponseDTO res = waitingListService.getWaitingListById(id);
         return new ResponseEntity<>(new SuccessDTO<>("success" , "Waiting List "+  id +" Retrieved Successfully !" , res) , HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<SuccessDTO<WaitingListResponseDTO>> deleteWaitingList(@PathVariable Long id){
+        WaitingListResponseDTO res = waitingListService.delete(id);
+        return new ResponseEntity<>(new SuccessDTO<>("success" , "Waiting List "+  id +" Deleted Successfully !" , res) , HttpStatus.OK);
+    }
 }

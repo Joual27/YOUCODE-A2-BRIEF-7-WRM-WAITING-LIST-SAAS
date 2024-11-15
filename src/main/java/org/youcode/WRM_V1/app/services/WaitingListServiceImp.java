@@ -75,6 +75,7 @@ public class WaitingListServiceImp implements WaitingListService {
             throw new NegativeCapacityException("Capacity Can't be negative ! ");
         }
         WaitingList waitingListToUpdate = createWaitingListDTOToWaitingListEntityMapper.toEntity(data);
+        waitingListToUpdate.setId(id);
         WaitingList updatedWaitingList = waitingListPersistenceAdapter.save(waitingListToUpdate);
         return waitingListEntityToWaitingListResponseDTOMapper.entityToDto(updatedWaitingList);
     }
@@ -83,6 +84,14 @@ public class WaitingListServiceImp implements WaitingListService {
     public WaitingListResponseDTO getWaitingListById(Long id){
         WaitingList w = waitingListPersistenceAdapter.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("No waiting list was found with given id !"));
+        return waitingListEntityToWaitingListResponseDTOMapper.entityToDto(w);
+    }
+
+    @Override
+    public WaitingListResponseDTO delete(Long id){
+        WaitingList w = waitingListPersistenceAdapter.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("No waiting list was found with given id !"));
+        waitingListPersistenceAdapter.deleteById(id);
         return waitingListEntityToWaitingListResponseDTOMapper.entityToDto(w);
     }
 }
