@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import org.youcode.WRM_V1.common.BaseEntity;
 import org.youcode.WRM_V1.core.entities.visit.Visit;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -25,5 +26,5 @@ public class Visitor extends BaseEntity {
     private String lastName;
 
     @OneToMany(mappedBy = "visitor" , fetch = FetchType.EAGER)
-    private Set<Visit> visits;
+    private List<Visit> visits;
 }
