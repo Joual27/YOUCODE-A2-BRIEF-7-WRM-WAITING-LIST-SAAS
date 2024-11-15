@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.youcode.WRM_V1.app.ports.inbound.WaitingListService;
-import org.youcode.WRM_V1.core.entities.waitingList.DTOs.CreateWaitingListDTO;
+import org.youcode.WRM_V1.core.entities.waitingList.DTOs.CreateAndUpdateWaitingListDTO;
 import org.youcode.WRM_V1.core.entities.waitingList.DTOs.WaitingListResponseDTO;
 import org.youcode.WRM_V1.utils.DTOs.SuccessDTO;
 
@@ -26,7 +26,7 @@ public class WaitingListWebAdapter {
     }
 
     @PostMapping()
-    public ResponseEntity<SuccessDTO<WaitingListResponseDTO>> createWaitingList(@RequestBody @Valid CreateWaitingListDTO req){
+    public ResponseEntity<SuccessDTO<WaitingListResponseDTO>> createWaitingList(@RequestBody @Valid CreateAndUpdateWaitingListDTO req){
         WaitingListResponseDTO res = waitingListService.save(req);
         return new ResponseEntity<>(new SuccessDTO<>("success" ,"Waiting List Created Successfully " , res) , HttpStatus.OK);
     }
@@ -36,6 +36,18 @@ public class WaitingListWebAdapter {
         PageRequest pageable = PageRequest.of(page, size);
         Page<WaitingListResponseDTO> res = waitingListService.getAll(pageable);
         return new ResponseEntity<>(new SuccessDTO<>("success", "Waiting List Of Page : " + page + " Fetched Successfully !", res.getContent()), HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<SuccessDTO<WaitingListResponseDTO>> updateWaitingList(@PathVariable Long id , @RequestBody CreateAndUpdateWaitingListDTO req){
+       WaitingListResponseDTO res = waitingListService.update(id , req);
+       return new ResponseEntity<>(new SuccessDTO<>("success" , "Waiting List "+  id +" Updated Successfully !" , res) , HttpStatus.OK);
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<SuccessDTO<WaitingListResponseDTO>> getWaitingListByID(@PathVariable Long id){
+        WaitingListResponseDTO res = waitingListService.getWaitingListById(id);
+        return new ResponseEntity<>(new SuccessDTO<>("success" , "Waiting List "+  id +" Retrieved Successfully !" , res) , HttpStatus.OK);
     }
 
 }
