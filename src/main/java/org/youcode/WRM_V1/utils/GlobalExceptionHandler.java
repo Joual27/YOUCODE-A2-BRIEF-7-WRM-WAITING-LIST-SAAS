@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.youcode.WRM_V1.core.exceptions.EntityNotFoundException;
+import org.youcode.WRM_V1.core.exceptions.InvalidArrivalTimeException;
+import org.youcode.WRM_V1.core.exceptions.MissingDataException;
 import org.youcode.WRM_V1.core.exceptions.NegativeCapacityException;
 import org.youcode.WRM_V1.utils.DTOs.ErrorDTO;
 
@@ -71,6 +73,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NegativeCapacityException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO handleNegativeCapacityHandler(NegativeCapacityException e){
+        return new ErrorDTO(HttpStatus.BAD_REQUEST.value(), e.getMessage(), LocalDateTime.now());
+    }
+
+    @ExceptionHandler(InvalidArrivalTimeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDTO handleInvalidArrivalTime(InvalidArrivalTimeException e){
+        return new ErrorDTO(HttpStatus.BAD_REQUEST.value(), e.getMessage(), LocalDateTime.now());
+    }
+
+    @ExceptionHandler(MissingDataException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDTO handleMissingDataException(MissingDataException e){
         return new ErrorDTO(HttpStatus.BAD_REQUEST.value(), e.getMessage(), LocalDateTime.now());
     }
 
