@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.youcode.WRM_V1.app.ports.inbound.VisitService;
+import org.youcode.WRM_V1.core.entities.embeddables.VisitKey;
 import org.youcode.WRM_V1.core.entities.visit.DTOs.CreateVisitDTO;
 import org.youcode.WRM_V1.core.entities.visit.DTOs.VisitResponseDTO;
 import org.youcode.WRM_V1.core.entities.visit.Visit;
@@ -45,7 +46,9 @@ public class VisitServiceImp implements VisitService {
         if (data.arrivalTime().isBefore(LocalDateTime.now())){
             throw new InvalidArrivalTimeException("Arrival Time can't be before now");
         }
-        handleAlgorithmDataValidation(w.getAlgorithm() , data);
+        if (!w.getAlgorithm().equals("FIFO")){
+            handleAlgorithmDataValidation(w.getAlgorithm() , data);
+        }
         Visit visitToCreate = createVisitDTOToVisitEntityMapper.toEntity(data);
         Visit createdVisit = visitPersistenceAdapter.save(visitToCreate);
         createdVisit.setVisitor(v);
@@ -58,6 +61,31 @@ public class VisitServiceImp implements VisitService {
     public Page<VisitResponseDTO> getAllVisits(Pageable pageable){
         Page<Visit> visits = visitPersistenceAdapter.findAll(pageable);
         return visits.map(visitEntityToVisitResponseDTOMapper::entityToDto);
+    }
+
+    @Override
+    public VisitResponseDTO getVisitById(Long visitorId , Long waitingListId){
+        Visitor visitor = visitorPersistenceAdapter.findById(visitorId)
+                .orElseThrow(() -> new EntityNotFoundException("No visitor exists with given ID! "));
+        WaitingList waitingList = waitingListPersistenceAdapter.findById(waitingListId)
+                .orElseThrow(() -> new EntityNotFoundException("No Waiting List exists with given ID !"));
+        VisitKey id = new VisitKey(visitorId , waitingListId);
+        Visit v = visitPersistenceAdapter.findById(id)
+                .orElseThrow(()-> new EntityNotFoundException("No such visit with given ID was found !"));
+        return visitEntityToVisitResponseDTOMapper.entityToDto(v);
+    }
+
+    @Override
+    public VisitResponseDTO delete(Long visitorId , Long waitingListId){
+        Visitor visitor = visitorPersistenceAdapter.findById(visitorId)
+                .orElseThrow(() -> new EntityNotFoundException("No visitor exists with given ID! "));
+        WaitingList waitingList = waitingListPersistenceAdapter.findById(waitingListId)
+                .orElseThrow(() -> new EntityNotFoundException("No Waiting List exists with given ID !"));
+        VisitKey id = new VisitKey(visitorId , waitingListId);
+        Visit v = visitPersistenceAdapter.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("No such visit with given id !"));
+        visitPersistenceAdapter.deleteById(id);
+        return visitEntityToVisitResponseDTOMapper.entityToDto(v);
     }
 
     private void handleAlgorithmDataValidation(String algorithm , CreateVisitDTO data){
