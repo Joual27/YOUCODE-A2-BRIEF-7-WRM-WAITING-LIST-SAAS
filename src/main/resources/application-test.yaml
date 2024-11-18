@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: WRM_V1
+  datasource:
+    driver-class-name: com.ibm.db2.jcc.DB2Driver
+    url: jdbc:db2://localhost:50000/wrmt_db
+    username: db2inst1
+    password: Fasha321@
+  jpa:
+    hibernate:
+      ddl-auto: none
