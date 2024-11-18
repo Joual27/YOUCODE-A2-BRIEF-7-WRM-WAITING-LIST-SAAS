@@ -2,6 +2,7 @@ package org.youcode.WRM_V1.app.services;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,14 +22,12 @@ import java.util.List;
 
 @Service
 public class WaitingListServiceImp implements WaitingListService {
-
     @Getter
     @Value("${APP_DEFAULT_ALGORITHM}")
     private String defaultAlgorithm;
     @Getter
     @Value("${APP_DEFAULT_CAPACITY}")
     private Integer defaultCapacity;
-
 
     private final WaitingListPersistenceAdapter waitingListPersistenceAdapter;
     private final CreateWaitingListDTOToWaitingListEntityMapper createWaitingListDTOToWaitingListEntityMapper;

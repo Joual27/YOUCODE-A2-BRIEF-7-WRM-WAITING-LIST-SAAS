@@ -11,5 +11,4 @@ import org.youcode.WRM_V1.core.entities.visit.Visit;
 
 public interface VisitDAO extends GenericDao<Visit , VisitKey> {
     Page<Visit> findAll(Pageable pageable);
-
 }
